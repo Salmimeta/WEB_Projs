@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+    <html>
+        <style>
+            div{
+                border: 3px solid black;
+                background-color: white;
+                padding-left: 30px;
+                padding-right: 30px;
+                padding-top: 20px;
+                padding-bottom: 30px;
+            }
+            body{
+                background-image: url(background.jpg);
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-position: center top;
+            }
+            button{
+                background-color: antiquewhite;
+            }
+        </style>
+        <head>
+            <meta name="viewport" content="width-device-width,initial-scale=1.0">
+            <title>Exo3</title>
+            <link rel="stylesheet" type=" text/css" href="style.css">
+
+        </head>
+        <body>
+            <header>Exo2</header>
+            <div>
+                This is a second web page, made to test how i can get here through a link created in the
+                previous page.
+            </div>
+            <br>
+            <button type="button" onclick="alert('Hello LOSERS!')">Click Me!</button>
+            <form action="#" method="post">
+                <label for="food" style="color: azure;">Choose your favorit food : </label>
+                <select id="food" name="food" >
+                    <option value="burgers">Burgers</option>
+                    <option value="pizza">Pizza</option>
+                    <option value="spaggetti">Spaggetti</option>
+                    <option value="taccos">Taccos</option>
+                </select>
+                <br>
+                <input type="submit">
+            </form>
+            <form action="#" method="get">
+                <label for="utext" style="color: white;">Sumbit whatever text :</label><br>
+                <textarea name="message" id="utext" name="utext" rows="5">Just some randome Text.</textarea><br>
+                <button type="button" onclick="alert('I Dont CARE What You Submitted!')">Submit</button>
+            </form>
+    
+        </body>
+        
+
+
+
+    </html>
