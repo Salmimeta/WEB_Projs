@@ -3,21 +3,19 @@
 let imageIndex = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // === Warn before page reload ===
+    // === Warn before reload if canvas has content ===
     window.addEventListener('beforeunload', (e) => {
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-
         const hasContent = [...pixels].some((_, i) => i % 4 === 3 && pixels[i] !== 0);
         if (hasContent) {
             e.preventDefault();
-            e.returnValue = ''; // required for some browsers
+            e.returnValue = '';
         }
     });
 
-
-    // === DARK MODE TOGGLE ===
+    // === Dark Mode Toggle ===
     const toggle = document.getElementById('darkModeToggle');
     const applyTheme = (isDark, save = true) => {
         document.body.classList.add('fade-theme');
@@ -26,14 +24,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (save) localStorage.setItem('theme', isDark ? 'dark' : 'light');
         setTimeout(() => document.body.classList.remove('fade-theme'), 500);
     };
-    const savedTheme = localStorage.getItem('theme');
-    applyTheme(savedTheme ? savedTheme === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches, false);
+    applyTheme(localStorage.getItem('theme') === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches);
     toggle.addEventListener('change', () => applyTheme(toggle.checked));
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
         if (!localStorage.getItem('theme')) applyTheme(e.matches, false);
     });
 
-    // === TOGGLE MORE OPTIONS PANEL ===
+    // === More Options Toggle ===
     const toggleBtn = document.getElementById('toggleMoreBtn');
     const moreOptions = document.getElementById('moreOptions');
     toggleBtn.addEventListener('click', () => {
@@ -41,24 +38,15 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleBtn.textContent = expanded ? 'Less Options ↑' : 'More Options ↓';
     });
 
-    // === OPTION CHANGE LISTENERS ===
-    document.getElementById('fusionMethod')?.addEventListener('change', mergeImages);
-    document.querySelectorAll('input[name="resizeOption"]').forEach(r =>
-        r.addEventListener('change', mergeImages)
-    );
-
+    // === Method Select & Slider
     const methodSelect = document.getElementById('fusionMethod');
     const sliderContainer = document.getElementById('weightSliderContainer');
     const slider = document.getElementById('weightSlider');
     const sliderValue = document.getElementById('weightValue');
 
     methodSelect.addEventListener('change', () => {
-        mergeImages(); // re-fuse immediately
-        if (methodSelect.value === 'weighted') {
-            sliderContainer.style.display = 'block';
-        } else {
-            sliderContainer.style.display = 'none';
-        }
+        mergeImages();
+        sliderContainer.style.display = methodSelect.value === 'weighted' ? 'block' : 'none';
     });
 
     slider.addEventListener('input', () => {
@@ -66,9 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
         mergeImages();
     });
 
+    document.querySelectorAll('input[name="resizeOption"]').forEach(r =>
+        r.addEventListener('change', mergeImages)
+    );
 
-    // === CLEAR BUTTON ===
-    document.getElementById('clearCanvasBtn')?.addEventListener('click', () => {
+    // === Clear All
+    document.getElementById('clearCanvasBtn').addEventListener('click', () => {
         if (!confirm("Are you sure you want to reset everything?")) return;
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -77,18 +68,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.upload-section').innerHTML = '';
         imageIndex = 0;
         createUploadBox();
-
-        const stretchRadio = document.querySelector('input[name="resizeOption"][value="stretch"]');
-        if (stretchRadio) stretchRadio.checked = true;
-
-        const fusionSelect = document.getElementById('fusionMethod');
-        if (fusionSelect) fusionSelect.value = 'average';
-
+        document.querySelector('input[name="resizeOption"][value="stretch"]').checked = true;
+        methodSelect.value = 'average';
         moreOptions.classList.remove('visible');
         toggleBtn.textContent = 'More Options ↓';
     });
 
-    // === INITIAL UPLOAD BOX ===
+    // === First Upload Box
     createUploadBox();
 });
 
@@ -138,7 +124,6 @@ function createUploadBox() {
 function previewImage(inputId, boxId) {
     const input = document.getElementById(inputId);
     const box = document.getElementById(boxId);
-
     if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = e => {
@@ -148,9 +133,8 @@ function previewImage(inputId, boxId) {
 
             const file = input.files[0];
             document.getElementById(`${inputId}-type`).textContent = file.type.split('/')[1]?.toUpperCase() || '';
-            document.getElementById(`${inputId}-name`).textContent = file.name.length > 20
-                ? file.name.slice(0, 17) + '...'
-                : file.name;
+            document.getElementById(`${inputId}-name`).textContent =
+                file.name.length > 20 ? file.name.slice(0, 17) + '...' : file.name;
 
             setTimeout(() => {
                 const allBoxes = document.querySelectorAll('.upload-box');
@@ -166,7 +150,6 @@ function previewImage(inputId, boxId) {
 
 function clearImage(inputId, boxId) {
     if (!confirm("Are you sure you want to remove this image?")) return;
-
     const input = document.getElementById(inputId);
     const box = document.getElementById(boxId);
     input.value = '';
@@ -175,18 +158,15 @@ function clearImage(inputId, boxId) {
     input.disabled = false;
     document.getElementById(`${inputId}-type`).textContent = '';
     document.getElementById(`${inputId}-name`).textContent = '';
-
-    const boxes = document.querySelectorAll('.upload-box');
-    if (boxes.length > 1) box.remove();
+    if (document.querySelectorAll('.upload-box').length > 1) box.remove();
     mergeImages();
 }
 
 function mergeImages() {
     const inputs = document.querySelectorAll('.upload-box input[type="file"]');
-    const files = Array.from(inputs).map(input => input.files[0]).filter(Boolean);
+    const files = Array.from(inputs).map(i => i.files[0]).filter(Boolean);
     const method = document.getElementById('fusionMethod')?.value || 'average';
     const resizeOption = document.querySelector('input[name="resizeOption"]:checked')?.value;
-
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     const loading = document.getElementById('loadingOverlay');
@@ -210,24 +190,22 @@ function mergeImages() {
     });
 
     function drawMergedImage(images) {
-        let width = Math.max(...images.map(img => img.width));
-        let height = Math.max(...images.map(img => img.height));
-
+        let width = images[0].width, height = images[0].height;
         if (resizeOption === 'preserve') {
-            width = Math.min(...images.map(img => img.width));
-            height = Math.min(...images.map(img => img.height));
-        } else if (resizeOption === 'none') {
-            width = images[0].width;
-            height = images[0].height;
+            width = Math.min(...images.map(i => i.width));
+            height = Math.min(...images.map(i => i.height));
+        } else if (resizeOption !== 'none') {
+            width = Math.max(...images.map(i => i.width));
+            height = Math.max(...images.map(i => i.height));
         }
 
         canvas.width = width;
         canvas.height = height;
 
         const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
         tempCanvas.width = width;
         tempCanvas.height = height;
-        const tempCtx = tempCanvas.getContext('2d');
 
         const result = ctx.createImageData(width, height);
         const buffers = [];
@@ -239,59 +217,57 @@ function mergeImages() {
         }
 
         for (let i = 0; i < result.data.length; i += 4) {
-            let rVals = [], gVals = [], bVals = [];
+            const r = [], g = [], b = [];
             for (const buf of buffers) {
-                rVals.push(buf[i]);
-                gVals.push(buf[i + 1]);
-                bVals.push(buf[i + 2]);
+                r.push(buf[i]);
+                g.push(buf[i + 1]);
+                b.push(buf[i + 2]);
             }
 
-            let r, g, b;
             switch (method) {
                 case 'lighten':
-                    r = Math.max(...rVals); g = Math.max(...gVals); b = Math.max(...bVals);
+                    result.data[i] = Math.max(...r);
+                    result.data[i + 1] = Math.max(...g);
+                    result.data[i + 2] = Math.max(...b);
                     break;
                 case 'darken':
-                    r = Math.min(...rVals); g = Math.min(...gVals); b = Math.min(...bVals);
+                    result.data[i] = Math.min(...r);
+                    result.data[i + 1] = Math.min(...g);
+                    result.data[i + 2] = Math.min(...b);
                     break;
                 case 'weighted':
                     const w = parseFloat(document.getElementById('weightSlider').value) / 100;
-                    r = Math.floor(rVals[0] * w + rVals[1] * (1 - w));
-                    g = Math.floor(gVals[0] * w + gVals[1] * (1 - w));
-                    b = Math.floor(bVals[0] * w + bVals[1] * (1 - w));
+                    result.data[i] = Math.floor(r[0] * w + r[1] * (1 - w));
+                    result.data[i + 1] = Math.floor(g[0] * w + g[1] * (1 - w));
+                    result.data[i + 2] = Math.floor(b[0] * w + b[1] * (1 - w));
                     break;
                 default:
-                    r = avg(rVals); g = avg(gVals); b = avg(bVals);
+                    result.data[i] = avg(r);
+                    result.data[i + 1] = avg(g);
+                    result.data[i + 2] = avg(b);
             }
 
+            result.data[i + 3] = 255;
         }
 
-        result.data[i] = r;
-        result.data[i + 1] = g;
-        result.data[i + 2] = b;
-        result.data[i + 3] = 255;
+        ctx.putImageData(result, 0, 0);
+        document.getElementById('downloadBtn').disabled = false;
+        loading.style.display = 'none';
     }
-
-    ctx.putImageData(result, 0, 0);
-    loading.style.display = 'none';
-    document.getElementById('downloadBtn').disabled = false;
 }
 
 function avg(arr) {
     return Math.floor(arr.reduce((a, b) => a + b, 0) / arr.length);
-}
 }
 
 function downloadImage() {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-
     if (![...data].some((_, i) => i % 4 === 3 && data[i] !== 0)) {
         alert("There's nothing to download.");
         return;
     }
-
     const link = document.createElement('a');
     link.download = 'fused_image.png';
     link.href = canvas.toDataURL('image/png');
