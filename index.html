@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -25,7 +26,6 @@
       <legend>Resize Option</legend>
       <label><input type="radio" name="resizeOption" value="stretch" checked /> Stretch</label>
       <label><input type="radio" name="resizeOption" value="preserve" /> Preserve</label>
-      <label><input type="radio" name="resizeOption" value="none" /> None</label>
     </fieldset>
 
     <button id="downloadBtn" class="btn" onclick="downloadImage()" disabled>Download</button>
@@ -36,21 +36,21 @@
     </div>
 
     <div id="moreOptions" class="">
-  <label for="fusionMethod">Fusion Method:</label>
-  <select id="fusionMethod">
-    <option value="average">Average</option>
-    <option value="lighten">Lighten</option>
-    <option value="darken">Darken</option>
-    <option value="weighted">Weighted Average</option> <!-- ✅ NEW -->
-  </select>
+      <label for="fusionMethod">Fusion Method:</label>
+      <select id="fusionMethod">
+        <option value="average">Average</option>
+        <option value="lighten">Lighten</option>
+        <option value="darken">Darken</option>
+        <option value="weighted" id="weightedOption">Weighted Average</option> <!-- NEW -->
+      </select>
 
-  <!-- NEW: Slider for Weighted Average -->
-  <div id="weightSliderContainer" style="display:none; margin-top: 10px;">
-    <label for="weightSlider">Weight (Image 1 vs Image 2):</label>
-    <input type="range" id="weightSlider" min="0" max="100" value="50" />
-    <span id="weightValue">50%</span>
-  </div>
-</div>
+      <!-- NEW: Slider for Weighted Average -->
+      <div id="weightSliderContainer" style="display:none; margin-top: 10px;">
+        <label for="weightSlider">Weight (Image 1 vs Image 2):</label>
+        <input type="range" id="weightSlider" min="0" max="100" value="50" />
+        <span id="weightValue">50%</span>
+      </div>
+    </div>
   </div>
 
   <div id="loadingOverlay">Loading...</div>
@@ -58,4 +58,5 @@
 
   <script src="script.js"></script>
 </body>
+
 </html>

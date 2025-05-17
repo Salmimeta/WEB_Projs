@@ -1,6 +1,7 @@
 // === IMAGE FUSION TOOL SCRIPT ===
 
 let imageIndex = 0;
+const imageOpacities = {};
 
 document.addEventListener('DOMContentLoaded', () => {
     // === Warn before reload if canvas has content ===
@@ -86,9 +87,16 @@ function createUploadBox() {
     const newBox = document.createElement('div');
     newBox.className = 'upload-box';
     newBox.id = boxId;
+
     newBox.innerHTML = `
         <input type="file" id="${inputId}" accept="image/*" />
-        <span class="remove-btn" onclick="clearImage('${inputId}', '${boxId}')">×</span>
+        <button class="edit-btn" onclick="toggleEditMenu(this)">⋮</button>
+        <div class="edit-menu">
+            <button onclick="clearImage('${inputId}', '${boxId}')">🗑 Remove</button>
+            <button onclick="editPosition('${inputId}')">🎯 Edit Position</button>
+            <button onclick="editOpacity('${inputId}')">💧 Edit Opacity</button>
+            <button onclick="editMerging('${inputId}')">🔀 Edit Merging</button>
+        </div>
         <div class="file-info">
             <span class="file-type" id="${inputId}-type"></span>
             <span class="file-name" id="${inputId}-name"></span>
@@ -98,6 +106,7 @@ function createUploadBox() {
 
     const input = newBox.querySelector('input');
     input.addEventListener('change', () => {
+        imageOpacities[inputId] = 1;
         previewImage(inputId, boxId);
         mergeImages();
     });
@@ -121,6 +130,48 @@ function createUploadBox() {
     imageIndex++;
 }
 
+function toggleEditMenu(button) {
+    const menu = button.nextElementSibling;
+    const openMenus = document.querySelectorAll('.edit-menu.show');
+    openMenus.forEach(m => {
+        if (m !== menu) m.classList.remove('show');
+    });
+    menu.classList.toggle('show');
+    document.addEventListener('click', function handler(e) {
+        if (!menu.contains(e.target) && e.target !== button) {
+            menu.classList.remove('show');
+            document.removeEventListener('click', handler);
+        }
+    });
+}
+
+function editOpacity(inputId) {
+    const current = imageOpacities[inputId] ?? 1;
+    const newOpacity = prompt("Enter opacity for this image (0.0 to 1.0):", current);
+    const parsed = parseFloat(newOpacity);
+
+    if (!isNaN(parsed) && parsed >= 0 && parsed <= 1) {
+        imageOpacities[inputId] = parsed;
+        mergeImages();
+    } else {
+        alert("Invalid opacity value. Please enter a number between 0.0 and 1.0.");
+    }
+}
+
+
+// function editPosition(inputId) {
+//     alert(`Edit Position for ${inputId} (not implemented yet).`);
+// }
+
+// function editOpacity(inputId) {
+//     alert(`Edit Opacity for ${inputId} (not implemented yet).`);
+// }
+
+// function editMerging(inputId) {
+//     alert(`Edit Merging for ${inputId} (not implemented yet).`);
+// }
+
+
 function previewImage(inputId, boxId) {
     const input = document.getElementById(inputId);
     const box = document.getElementById(boxId);
@@ -130,6 +181,8 @@ function previewImage(inputId, boxId) {
             box.style.backgroundImage = `url('${e.target.result}')`;
             box.classList.add('has-image');
             input.disabled = true;
+            // Inside reader.onload in previewImage
+            box.querySelector('.edit-btn').style.display = 'block';
 
             const file = input.files[0];
             document.getElementById(`${inputId}-type`).textContent = file.type.split('/')[1]?.toUpperCase() || '';
@@ -156,6 +209,7 @@ function clearImage(inputId, boxId) {
     box.style.backgroundImage = '';
     box.classList.remove('has-image');
     input.disabled = false;
+    box.querySelector('.edit-btn').style.display = 'none';
     document.getElementById(`${inputId}-type`).textContent = '';
     document.getElementById(`${inputId}-name`).textContent = '';
     if (document.querySelectorAll('.upload-box').length > 1) box.remove();
@@ -163,14 +217,33 @@ function clearImage(inputId, boxId) {
 }
 
 function mergeImages() {
-    const inputs = document.querySelectorAll('.upload-box input[type="file"]');
-    const files = Array.from(inputs).map(i => i.files[0]).filter(Boolean);
-    const method = document.getElementById('fusionMethod')?.value || 'average';
+    const fileInputs = Array.from(document.querySelectorAll('.upload-box input[type="file"]'));
+    const files = fileInputs.map(input => input.files[0]).filter(Boolean);
+
+    const methodSelect = document.getElementById('fusionMethod');
+    const method = methodSelect?.value || 'average';
     const resizeOption = document.querySelector('input[name="resizeOption"]:checked')?.value;
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     const loading = document.getElementById('loadingOverlay');
     loading.style.display = 'flex';
+
+    // Disable weighted if more than 2 images
+    const weightedOption = methodSelect.querySelector('option[value="weighted"]');
+    if (files.length > 2) {
+        weightedOption.disabled = true;
+        weightedOption.title = "Disabled: Weighted fusion works only with 2 images.";
+        if (method === 'weighted') {
+            methodSelect.value = 'average';
+        }
+        document.getElementById('weightSliderContainer').style.display = 'none';
+    } else {
+        weightedOption.disabled = false;
+        weightedOption.title = "";
+        if (methodSelect.value === 'weighted') {
+            document.getElementById('weightSliderContainer').style.display = 'block';
+        }
+    }
 
     if (files.length === 0) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -194,7 +267,7 @@ function mergeImages() {
         if (resizeOption === 'preserve') {
             width = Math.min(...images.map(i => i.width));
             height = Math.min(...images.map(i => i.height));
-        } else if (resizeOption !== 'none') {
+        } else if (resizeOption !== 'stretch') {
             width = Math.max(...images.map(i => i.width));
             height = Math.max(...images.map(i => i.height));
         }
@@ -210,9 +283,16 @@ function mergeImages() {
         const result = ctx.createImageData(width, height);
         const buffers = [];
 
-        for (const img of images) {
+        for (let i = 0; i < images.length; i++) {
+            const img = images[i];
+            const inputId = fileInputs[i].id;
+            const opacity = imageOpacities[inputId] ?? 1;
+
             tempCtx.clearRect(0, 0, width, height);
+            tempCtx.globalAlpha = opacity;
             tempCtx.drawImage(img, 0, 0, width, height);
+            tempCtx.globalAlpha = 1;
+
             buffers.push(tempCtx.getImageData(0, 0, width, height).data);
         }
 
@@ -224,7 +304,7 @@ function mergeImages() {
                 b.push(buf[i + 2]);
             }
 
-            switch (method) {
+            switch (methodSelect.value) {
                 case 'lighten':
                     result.data[i] = Math.max(...r);
                     result.data[i + 1] = Math.max(...g);
@@ -253,6 +333,10 @@ function mergeImages() {
         ctx.putImageData(result, 0, 0);
         document.getElementById('downloadBtn').disabled = false;
         loading.style.display = 'none';
+    }
+
+    function avg(arr) {
+        return Math.floor(arr.reduce((a, b) => a + b, 0) / arr.length);
     }
 }
 
