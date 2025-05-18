@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Advanced Image Fusion Tool for combining multiple images with different blend modes">
+  <title>Advanced Image Fusion Tool</title>
+  <link rel="stylesheet" href="stylesDS.css" />
+  <link rel="icon" href="pics/icon.png" type="image/x-icon">
+</head>
+
+<body>
+  <div class="toggle-container">
+    <label class="switch" aria-label="Toggle dark mode">
+      <input type="checkbox" id="darkModeToggle" title="Toggle Dark Mode" />
+      <span class="slider"></span>
+    </label>
+    <span id="themeLabel">Dark Mode</span>
+  </div>
+
+  <h1>Advanced Image Fusion</h1>
+
+  <div class="upload-section"><!-- Upload boxes inserted dynamically --></div>
+
+  <div class="options" id="optionsPanel">
+    <fieldset>
+      <legend>Resize Option</legend>
+      <label><input type="radio" name="resizeOption" value="stretch" checked /> Stretch</label>
+      <label><input type="radio" name="resizeOption" value="preserve" /> Preserve</label>
+      <label><input type="radio" name="resizeOption" value="none" /> None</label>
+      <label><input type="radio" name="resizeOption" value="fitWidth" /> Fit Width</label>
+      <label><input type="radio" name="resizeOption" value="fitHeight" /> Fit Height</label>
+    </fieldset>
+
+    <div class="button-group">
+      <button id="downloadBtn" class="btn" onclick="downloadImage()" disabled>Download PNG</button>
+      <button id="clearCanvasBtn" class="btn">Reset All</button>
+      <button id="undoBtn" class="btn" disabled>Undo</button>
+    </div>
+
+    <div class="more-options-toggle">
+      <button id="toggleMoreBtn" class="btn">Advanced Options ↓</button>
+    </div>
+
+    <div id="moreOptions">
+      <div class="option-row">
+        <label for="fusionMethod">Blend Mode:</label>
+        <select id="fusionMethod" class="fusion-method">
+          <option value="average">Average</option>
+          <option value="lighten">Lighten</option>
+          <option value="darken">Darken</option>
+          <option value="multiply">Multiply</option>
+          <option value="screen">Screen</option>
+          <option value="overlay">Overlay</option>
+        </select>
+      </div>
+      
+      <div class="option-row">
+        <label for="opacitySlider">Opacity:</label>
+        <input type="range" id="opacitySlider" min="0" max="100" value="100">
+        <span id="opacityValue">100%</span>
+      </div>
+      
+      <div class="option-row">
+        <label for="qualitySlider">Export Quality:</label>
+        <input type="range" id="qualitySlider" min="50" max="100" value="90">
+        <span id="qualityValue">90%</span>
+      </div>
+      
+      <div class="option-row">
+        <label for="exportFormat">Format:</label>
+        <select id="exportFormat" class="fusion-method">
+          <option value="png">PNG</option>
+          <option value="jpeg">JPEG</option>
+          <option value="webp">WebP</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="progress-text">Processing...</div>
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+  </div>
+  
+  <div class="canvas-container">
+    <canvas id="canvas"></canvas>
+    <div class="canvas-controls">
+      <button id="zoomInBtn" class="btn-icon">+</button>
+      <button id="zoomOutBtn" class="btn-icon">-</button>
+      <button id="resetZoomBtn" class="btn-icon">↻</button>
+    </div>
+  </div>
+
+  <script src="scriptDS.js"></script>
+</body>
+</html>
