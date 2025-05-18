@@ -2,7 +2,7 @@
 	1~ Choose Different Fusion Techniques:
 	--------------------------------------
 
-	1. Simple Pixel-based Methods (Spatial Domain): These work directly on pixels.
+	✅ 1. Simple Pixel-based Methods (Spatial Domain): These work directly on pixels.
 
 	.Averaging (what you already have)
 	.Maximum selection (Lighten) → choose the brightest pixel
