@@ -1,0 +1,97 @@
+.options {
+    text-align: center;
+    margin-bottom: 20px;
+    border: 2px dotted #9b9a9a;
+    border-radius: 20px;
+    padding-bottom: 10px;
+    width: fit-content;
+    height: fit-content;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.fusion-method {
+    padding: 0.5rem 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 2px solid #52ab98;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #333;
+    transition: border-color 0.3s, background-color 0.3s;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.fusion-method:hover {
+    border-color: #135d4f;
+    background-color: #f4f4f4;
+}
+
+#weightedOption.disabled {
+    color: #bbb;
+    position: relative;
+    pointer-events: none;
+}
+
+#weightedOption.disabled::after {
+    content: "⚠";
+    color: red;
+    position: absolute;
+    right: -1.2em;
+    top: 0;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+#weightedOption.disabled:hover::after {
+    content: "Requires 2 images";
+    color: red;
+    font-size: 0.7em;
+    position: absolute;
+    right: -5em;
+    top: 0.5em;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 2px 5px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+fieldset {
+    margin: 1rem;
+    border: 2px solid #52ab98;
+    border-radius: 10px;
+    padding: 1rem;
+    display: inline-block;
+}
+
+fieldset legend {
+    font-weight: 700;
+    color: #706767;
+}
+
+.more-options-toggle {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#moreOptions {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s ease, opacity 0.4s ease;
+}
+
+#moreOptions label {
+    font-weight: 500;
+    margin-right: 10px;
+    color: #444;
+}
+
+#moreOptions.visible {
+    max-height: 200px;
+    opacity: 1;
+}

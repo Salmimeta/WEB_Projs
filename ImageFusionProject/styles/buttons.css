@@ -1,0 +1,60 @@
+/* === Buttons (Unified Style) === */
+.btn {
+    display: inline-block;
+    padding: 0.6rem 1.4rem;
+    margin: 5px auto;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #fff;
+    background-color: #3498db;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    background-color: #2471a3;
+    transform: scale(0.98);
+}
+
+.btn:disabled {
+    background-color: #bbb;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn:focus {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+#toggleMoreBtn {
+    background-color: #52ab98;
+    color: rgb(31, 28, 28);
+    border: none;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.4s ease;
+}
+
+#toggleMoreBtn:hover {
+    background-color: #448f7f;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}

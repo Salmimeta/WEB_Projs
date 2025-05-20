@@ -1,0 +1,14 @@
+/* === Base Reset === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #b1ddc9;
+    color: #111;
+    padding: 2rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
