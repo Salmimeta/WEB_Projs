@@ -1,10 +1,100 @@
-/* === Canvas === */
+/* === Canvas Area === */
 canvas {
-    display: block;
-    background-color: #f0f1dd;
-    margin: 20px auto;
-    border: 5px solid #ccc;
-    border-radius: 10px;
-    max-width: 100%;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+  display: block;
+  background-color: #f0f1dd;
+  margin: 20px auto;
+  border: 5px solid #ccc;
+  border-radius: 10px;
+  max-width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+/* === Overlay used for positioning images === */
+#position-overlay {
+  pointer-events: auto;
+  background: rgba(0, 0, 0, 0.03);
+  position: absolute;
+}
+
+/* === Resize Handles (Corners) === */
+.resize-handle {
+  width: 14px;
+  height: 14px;
+  background-color: black;
+  border: 2px solid white;
+  position: absolute;
+  z-index: 10000;
+  border-radius: 2px;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+}
+
+.resize-handle::after {
+  content: "↘";
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  display: block;
+  text-align: center;
+  line-height: 12px;
+}
+
+.resize-handle.nw {
+  top: -5px;
+  left: -5px;
+  cursor: nwse-resize;
+}
+.resize-handle.nw::after { content: "↖"; }
+
+.resize-handle.ne {
+  top: -5px;
+  right: -5px;
+  cursor: nesw-resize;
+}
+.resize-handle.ne::after { content: "↗"; }
+
+.resize-handle.sw {
+  bottom: -5px;
+  left: -5px;
+  cursor: nesw-resize;
+}
+.resize-handle.sw::after { content: "↙"; }
+
+.resize-handle.se {
+  bottom: -5px;
+  right: -5px;
+  cursor: nwse-resize;
+}
+.resize-handle.se::after { content: "↘"; }
+
+/* === Position Hint === */
+#positionHint {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #222;
+  color: #fff;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  z-index: 10000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+canvas.positioning-active + #positionHint {
+  display: block;
+}
+
+/* === Utility === */
+.hidden {
+  display: none !important;
+}
+
+/* === Animation === */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -5px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
 }

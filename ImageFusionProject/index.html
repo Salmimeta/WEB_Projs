@@ -41,10 +41,9 @@
         <option value="average">🟡 Average</option>
         <option value="lighten">🔆 Lighten</option>
         <option value="darken">🌑 Darken</option>
-        <option value="weighted" id="weightedOption"> Weighted Average</option> <!-- NEW -->
+        <option value="weighted" id="weightedOption"> Weighted Average</option>
       </select>
 
-      <!-- NEW: Slider for Weighted Average -->
       <div id="weightSliderContainer" style="display:none; margin-top: 10px;">
         <label for="weightSlider">Weight (Image 1 vs Image 2):</label>
         <input type="range" id="weightSlider" min="0" max="100" value="50" />
@@ -54,9 +53,11 @@
   </div>
 
   <div id="loadingOverlay">Loading...</div>
-  <canvas id="canvas"></canvas>
 
-  <script src="script/main.js" type="module"></script>
+  <canvas id="canvas"></canvas>
+  <div id="positionHint">Click anywhere to release</div>
+
+  <script src="script/main.js" type="module"></script> <!-- optional -->
   <script src="script/download.js" type="module"></script>
   <script src="script/state.js" type="module"></script>
   <script src="script/editMenu.js" type="module"></script>

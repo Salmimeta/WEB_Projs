@@ -1,5 +1,11 @@
 import { mergeImages } from './merge.js';
-import { getImageOpacities, getImageMergingMethods } from './state.js';
+import {
+    getImageOpacities,
+    getImageMergingMethods,
+    getImageWeights,
+    setImageWeight,
+    setImagePosition
+} from './state.js';
 
 function toggleEditMenu(button) {
     const menu = button.nextElementSibling;
@@ -15,6 +21,7 @@ function toggleEditMenu(button) {
         }
     });
     menu.querySelector('.opacity-slider-container').style.display = 'none';
+    menu.querySelector('.merge-slider-container')?.classList.add('hidden');
 }
 
 function setupMoreOptionsToggle() {
@@ -32,17 +39,17 @@ function setupMoreOptionsToggle() {
     });
 }
 
-
 function editOpacity(inputId) {
     const box = document.getElementById(inputId).closest('.upload-box');
     const sliderContainer = box.querySelector('.opacity-slider-container');
-
-    // Toggle/menu logic
     const isVisible = sliderContainer.style.display === 'block';
     sliderContainer.style.display = isVisible ? 'none' : 'block';
+
     const mergeMenu = box.querySelector('.merge-methods-container');
     if (mergeMenu) mergeMenu.style.display = 'none';
 
+    const mergeSlider = box.querySelector('.merge-slider-container');
+    if (mergeSlider) mergeSlider.classList.add('hidden');
 
     if (!isVisible) {
         const slider = sliderContainer.querySelector('.opacity-slider');
@@ -55,89 +62,181 @@ function editOpacity(inputId) {
     }
 }
 
-
-
 function editMerging(inputId) {
     const box = document.getElementById(inputId).closest('.upload-box');
 
-    // Hide the opacity slider if open
     const sliderContainer = box.querySelector('.opacity-slider-container');
     if (sliderContainer) sliderContainer.style.display = 'none';
 
-    // Toggle merge methods menu
     const mergeMenu = box.querySelector('.merge-methods-container');
     const isVisible = mergeMenu.style.display === 'block';
     mergeMenu.style.display = isVisible ? 'none' : 'block';
 
-    // Rebind method buttons each time
     mergeMenu.querySelectorAll('button[data-method]').forEach(btn => {
         btn.onclick = () => {
             const method = btn.getAttribute('data-method');
             const map = getImageMergingMethods();
             map[inputId] = method;
             mergeImages();
-            mergeMenu.style.display = 'none'; // hide after selection
+            mergeMenu.style.display = 'none';
+
+            const mergeSlider = box.querySelector('.merge-slider-container');
+            if (method === 'weighted') {
+                mergeSlider?.classList.remove('hidden');
+                const slider = mergeSlider.querySelector('input');
+                slider.value = getImageWeights()[inputId] ?? 0.5;
+                slider.oninput = (e) => {
+                    const val = parseFloat(e.target.value);
+                    setImageWeight(inputId, val);
+                    mergeImages();
+                };
+            } else {
+                mergeSlider?.classList.add('hidden');
+            }
         };
     });
 }
 
-
 function editPosition(inputId) {
     const input = document.getElementById(inputId);
-    const box = input.closest('.upload-box'); // ✅ keep only this
+    const box = input.closest('.upload-box');
     const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
     const img = new Image();
-    img.src = box.style.backgroundImage.slice(5, -2); // remove url("...")
+    img.src = box.style.backgroundImage.slice(5, -2);
 
     img.onload = () => {
+        const overlay = document.createElement('div');
+        overlay.id = 'position-overlay';
+        overlay.style.position = 'absolute';
+        overlay.style.top = canvas.offsetTop + 'px';
+        overlay.style.left = canvas.offsetLeft + 'px';
+        overlay.style.width = canvas.width + 'px';
+        overlay.style.height = canvas.height + 'px';
+        overlay.style.zIndex = '9999';
+        overlay.style.pointerEvents = 'auto';
+        document.body.appendChild(overlay);
+
+        document.getElementById('positionHint')?.classList.add('active');
+
+        // Create wrapper
+        const wrapper = document.createElement('div');
+        wrapper.style.position = 'absolute';
+        wrapper.style.top = '50px';
+        wrapper.style.left = '50px';
+        wrapper.style.width = img.width + 'px';
+        wrapper.style.height = img.height + 'px';
+        wrapper.style.pointerEvents = 'none';
+        wrapper.style.zIndex = '10000';
+        overlay.appendChild(wrapper);
+
+        // Image inside wrapper
+        const imgEl = document.createElement('img');
+        imgEl.src = img.src;
+        imgEl.style.position = 'absolute';
+        imgEl.style.width = '100%';
+        imgEl.style.height = '100%';
+        imgEl.style.cursor = 'move';
+        imgEl.style.userSelect = 'none';
+        imgEl.style.pointerEvents = 'auto';
+        wrapper.appendChild(imgEl);
+
+        // Add resize handles
+        ['nw', 'ne', 'sw', 'se'].forEach(dir => {
+            const handle = document.createElement('div');
+            handle.className = `resize-handle ${dir}`;
+            wrapper.appendChild(handle);
+        });
+
         let dragging = false;
+        let resizing = false;
+        let currentHandle = null;
         let startX = 0, startY = 0;
-        let imgX = 100, imgY = 100; // default position
-        let imgW = img.width, imgH = img.height;
+        let startWidth = 0, startHeight = 0;
+        let offsetX = 0, offsetY = 0;
 
-        const redraw = () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, imgX, imgY, imgW, imgH);
-        };
-
-        const onMouseDown = (e) => {
+        wrapper.onmousedown = (e) => {
+            if (e.target.classList.contains('resize-handle')) return;
             dragging = true;
-            startX = e.offsetX - imgX;
-            startY = e.offsetY - imgY;
+            offsetX = e.clientX - wrapper.offsetLeft;
+            offsetY = e.clientY - wrapper.offsetTop;
+            e.preventDefault();
         };
 
-        const onMouseMove = (e) => {
-            if (!dragging) return;
-            imgX = e.offsetX - startX;
-            imgY = e.offsetY - startY;
-            redraw();
+        document.onmousemove = (e) => {
+            if (dragging) {
+                wrapper.style.left = (e.clientX - offsetX) + 'px';
+                wrapper.style.top = (e.clientY - offsetY) + 'px';
+            } else if (resizing && currentHandle) {
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+
+                if (currentHandle === 'se') {
+                    wrapper.style.width = startWidth + dx + 'px';
+                    wrapper.style.height = startHeight + dy + 'px';
+                } else if (currentHandle === 'sw') {
+                    wrapper.style.width = startWidth - dx + 'px';
+                    wrapper.style.height = startHeight + dy + 'px';
+                    wrapper.style.left = (wrapper.offsetLeft + dx) + 'px';
+                } else if (currentHandle === 'ne') {
+                    wrapper.style.width = startWidth + dx + 'px';
+                    wrapper.style.height = startHeight - dy + 'px';
+                    wrapper.style.top = (wrapper.offsetTop + dy) + 'px';
+                } else if (currentHandle === 'nw') {
+                    wrapper.style.width = startWidth - dx + 'px';
+                    wrapper.style.height = startHeight - dy + 'px';
+                    wrapper.style.left = (wrapper.offsetLeft + dx) + 'px';
+                    wrapper.style.top = (wrapper.offsetTop + dy) + 'px';
+                }
+            }
         };
 
-        const onMouseUp = () => {
+        document.onmouseup = () => {
             dragging = false;
-            setImagePosition(inputId, { x: imgX, y: imgY, width: imgW, height: imgH });
-
-            canvas.removeEventListener('mousedown', onMouseDown);
-            canvas.removeEventListener('mousemove', onMouseMove);
-            canvas.removeEventListener('mouseup', onMouseUp);
+            resizing = false;
         };
 
-        canvas.addEventListener('mousedown', onMouseDown);
-        canvas.addEventListener('mousemove', onMouseMove);
-        canvas.addEventListener('mouseup', onMouseUp);
+        wrapper.querySelectorAll('.resize-handle').forEach(handle => {
+            handle.onmousedown = (e) => {
+                e.stopPropagation();
+                resizing = true;
+                currentHandle = [...handle.classList].find(c => ['nw', 'ne', 'sw', 'se'].includes(c));
+                startX = e.clientX;
+                startY = e.clientY;
+                startWidth = wrapper.offsetWidth;
+                startHeight = wrapper.offsetHeight;
+            };
+        });
 
-        redraw(); // draw the image at initial position
+        // Confirm and save new position
+        setTimeout(() => {
+            document.addEventListener('click', function confirmHandler(ev) {
+                if (!overlay.contains(ev.target)) {
+                    const finalX = parseInt(wrapper.style.left || '0');
+                    const finalY = parseInt(wrapper.style.top || '0');
+                    const finalW = wrapper.offsetWidth;
+                    const finalH = wrapper.offsetHeight;
+
+                    setImagePosition(inputId, { x: finalX, y: finalY, width: finalW, height: finalH });
+                    mergeImages();
+
+                    overlay.remove();
+                    document.getElementById('positionHint')?.classList.remove('active');
+                    document.removeEventListener('click', confirmHandler);
+                }
+            });
+        }, 50);
     };
 
-    // Hide the opacity slider/ merge methods menu if open
+    // Hide any open sliders/menus
     const sliderContainer = box.querySelector('.opacity-slider-container');
     if (sliderContainer) sliderContainer.style.display = 'none';
     const mergeMenu = box.querySelector('.merge-methods-container');
     if (mergeMenu) mergeMenu.style.display = 'none';
-
+    const mergeSlider = box.querySelector('.merge-slider-container');
+    if (mergeSlider) mergeSlider.classList.add('hidden');
 }
+
 
 
 function setupEditUI() {
@@ -154,13 +253,19 @@ function setupEditUI() {
 
                 const mergeMenu = menu.querySelector('.merge-methods-container');
                 if (mergeMenu) mergeMenu.style.display = 'none';
+
+                const mergeSlider = menu.querySelector('.merge-slider-container');
+                if (mergeSlider) mergeSlider.classList.add('hidden');
             }
         });
     });
 }
 
-
-
-
-
-export { toggleEditMenu, setupMoreOptionsToggle, editOpacity, editMerging, editPosition, setupEditUI };
+export {
+    toggleEditMenu,
+    setupMoreOptionsToggle,
+    editOpacity,
+    editMerging,
+    editPosition,
+    setupEditUI
+};
