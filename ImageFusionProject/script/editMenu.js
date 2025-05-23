@@ -97,6 +97,7 @@ function editMerging(inputId) {
     });
 }
 
+
 function editPosition(inputId) {
     const input = document.getElementById(inputId);
     const box = input.closest('.upload-box');
@@ -119,7 +120,6 @@ function editPosition(inputId) {
 
         document.getElementById('positionHint')?.classList.add('active');
 
-        // Create wrapper
         const wrapper = document.createElement('div');
         wrapper.style.position = 'absolute';
         wrapper.style.top = '50px';
@@ -130,7 +130,6 @@ function editPosition(inputId) {
         wrapper.style.zIndex = '10000';
         overlay.appendChild(wrapper);
 
-        // Image inside wrapper
         const imgEl = document.createElement('img');
         imgEl.src = img.src;
         imgEl.style.position = 'absolute';
@@ -141,7 +140,6 @@ function editPosition(inputId) {
         imgEl.style.pointerEvents = 'auto';
         wrapper.appendChild(imgEl);
 
-        // Add resize handles
         ['nw', 'ne', 'sw', 'se'].forEach(dir => {
             const handle = document.createElement('div');
             handle.className = `resize-handle ${dir}`;
@@ -163,39 +161,6 @@ function editPosition(inputId) {
             e.preventDefault();
         };
 
-        document.onmousemove = (e) => {
-            if (dragging) {
-                wrapper.style.left = (e.clientX - offsetX) + 'px';
-                wrapper.style.top = (e.clientY - offsetY) + 'px';
-            } else if (resizing && currentHandle) {
-                const dx = e.clientX - startX;
-                const dy = e.clientY - startY;
-
-                if (currentHandle === 'se') {
-                    wrapper.style.width = startWidth + dx + 'px';
-                    wrapper.style.height = startHeight + dy + 'px';
-                } else if (currentHandle === 'sw') {
-                    wrapper.style.width = startWidth - dx + 'px';
-                    wrapper.style.height = startHeight + dy + 'px';
-                    wrapper.style.left = (wrapper.offsetLeft + dx) + 'px';
-                } else if (currentHandle === 'ne') {
-                    wrapper.style.width = startWidth + dx + 'px';
-                    wrapper.style.height = startHeight - dy + 'px';
-                    wrapper.style.top = (wrapper.offsetTop + dy) + 'px';
-                } else if (currentHandle === 'nw') {
-                    wrapper.style.width = startWidth - dx + 'px';
-                    wrapper.style.height = startHeight - dy + 'px';
-                    wrapper.style.left = (wrapper.offsetLeft + dx) + 'px';
-                    wrapper.style.top = (wrapper.offsetTop + dy) + 'px';
-                }
-            }
-        };
-
-        document.onmouseup = () => {
-            dragging = false;
-            resizing = false;
-        };
-
         wrapper.querySelectorAll('.resize-handle').forEach(handle => {
             handle.onmousedown = (e) => {
                 e.stopPropagation();
@@ -208,27 +173,93 @@ function editPosition(inputId) {
             };
         });
 
-        // Confirm and save new position
-        setTimeout(() => {
-            document.addEventListener('click', function confirmHandler(ev) {
-                if (!overlay.contains(ev.target)) {
-                    const finalX = parseInt(wrapper.style.left || '0');
-                    const finalY = parseInt(wrapper.style.top || '0');
-                    const finalW = wrapper.offsetWidth;
-                    const finalH = wrapper.offsetHeight;
+        document.onmousemove = (e) => {
+    if (dragging) {
+        let newLeft = e.clientX - offsetX;
+        let newTop = e.clientY - offsetY;
 
-                    setImagePosition(inputId, { x: finalX, y: finalY, width: finalW, height: finalH });
-                    mergeImages();
+        // Clamp to canvas
+        newLeft = Math.max(0, Math.min(newLeft, canvas.width - wrapper.offsetWidth));
+        newTop = Math.max(0, Math.min(newTop, canvas.height - wrapper.offsetHeight));
 
-                    overlay.remove();
-                    document.getElementById('positionHint')?.classList.remove('active');
-                    document.removeEventListener('click', confirmHandler);
-                }
-            });
-        }, 50);
+        wrapper.style.left = newLeft + 'px';
+        wrapper.style.top = newTop + 'px';
+
+    } else if (resizing && currentHandle) {
+        let dx = e.clientX - startX;
+        let dy = e.clientY - startY;
+
+        let newWidth = startWidth;
+        let newHeight = startHeight;
+        let newLeft = wrapper.offsetLeft;
+        let newTop = wrapper.offsetTop;
+
+        const minSize = 40;
+        
+        switch (currentHandle) {
+            case 'se':
+                newWidth = Math.min(startWidth + dx, canvas.width - newLeft);
+                newHeight = Math.min(startHeight + dy, canvas.height - newTop);
+                break;
+
+            case 'sw':
+                newWidth = Math.min(startWidth - dx, newLeft + startWidth);
+                newLeft = newLeft + dx;
+                newLeft = Math.max(0, newLeft);
+                newWidth = Math.max(minSize, Math.min(newWidth, canvas.width - newLeft));
+                newHeight = Math.min(startHeight + dy, canvas.height - newTop);
+                break;
+
+            case 'ne':
+                newHeight = Math.min(startHeight - dy, newTop + startHeight);
+                newTop = newTop + dy;
+                newTop = Math.max(0, newTop);
+                newHeight = Math.max(minSize, Math.min(newHeight, canvas.height - newTop));
+                newWidth = Math.min(startWidth + dx, canvas.width - newLeft);
+                break;
+
+            case 'nw':
+                newLeft = newLeft + dx;
+                newTop = newTop + dy;
+                newLeft = Math.max(0, newLeft);
+                newTop = Math.max(0, newTop);
+                newWidth = Math.min(startWidth - dx, canvas.width - newLeft);
+                newHeight = Math.min(startHeight - dy, canvas.height - newTop);
+                newWidth = Math.max(minSize, newWidth);
+                newHeight = Math.max(minSize, newHeight);
+                break;
+        }
+
+        wrapper.style.left = newLeft + 'px';
+        wrapper.style.top = newTop + 'px';
+        wrapper.style.width = newWidth + 'px';
+        wrapper.style.height = newHeight + 'px';
+    }
+};
+
+
+
+        document.onmouseup = () => {
+            if (!dragging && !resizing) return;
+
+            dragging = false;
+            resizing = false;
+
+            // Save final position and size
+            const finalX = parseInt(wrapper.style.left || '0');
+            const finalY = parseInt(wrapper.style.top || '0');
+            const finalW = wrapper.offsetWidth;
+            const finalH = wrapper.offsetHeight;
+
+            setImagePosition(inputId, { x: finalX, y: finalY, width: finalW, height: finalH });
+            mergeImages();
+
+            overlay.remove();
+            document.getElementById('positionHint')?.classList.remove('active');
+        };
     };
 
-    // Hide any open sliders/menus
+    // Hide other UI
     const sliderContainer = box.querySelector('.opacity-slider-container');
     if (sliderContainer) sliderContainer.style.display = 'none';
     const mergeMenu = box.querySelector('.merge-methods-container');
@@ -236,7 +267,6 @@ function editPosition(inputId) {
     const mergeSlider = box.querySelector('.merge-slider-container');
     if (mergeSlider) mergeSlider.classList.add('hidden');
 }
-
 
 
 function setupEditUI() {
