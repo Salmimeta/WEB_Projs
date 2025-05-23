@@ -1,0 +1,20 @@
+/* === Layout === */
+h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #52ab98;
+    text-shadow: 1px 1px 2px #135d4f;
+}
+
+.upload-section {
+    justify-content: center;
+    align-items: space-between;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 10px;
+    padding-bottom: 1rem;
+    margin-bottom: 30px;
+    scroll-behavior: smooth;
+}

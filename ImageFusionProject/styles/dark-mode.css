@@ -1,0 +1,103 @@
+/* === Dark Mode === */
+body.dark {
+    background-color: #103b28;
+    color: #f2f2f2;
+}
+
+body.dark h1 {
+    color: #b1ddc9;
+    text-shadow: 1px 1px 2px #1de1ba;
+}
+
+body.dark .upload-box {
+    border: 2px dashed #5e5c5c;
+    background-color: #a5a5ac;
+    background-image: url('/ImageFusionProject/pics/plus-sign.png');
+}
+
+body.dark .upload-box.dragover {
+    background-color: #444;
+}
+
+/* Dark mode preview (looks better when brighter) */
+body.dark .upload-box.has-image {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #ddd;
+    background-blend-mode: multiply;
+    opacity: 0.7;
+    background-color: #e4dcdc;
+    filter: brightness(0.8);
+    z-index: 1;
+}
+
+body.dark .edit-menu {
+    background: #ffffff;
+    border-color: #666;
+}
+
+body.dark .edit-menu button:hover {
+    background: #adabab;
+    border-radius: 4px;
+    color: #fff;
+}
+
+body.dark .opacity-slider-container {
+    background: #ffffff;
+}
+
+body.dark .file-info {
+    background: #f4e6e6;
+    opacity: 0.7;
+}
+
+body.dark .options {
+    border: 2px dotted #999898;
+}
+
+body.dark .fusion-method {
+    background-color: #dddbdb;
+    color: #333;
+    border-color: #87b8ab;
+}
+
+body.dark .fusion-method:hover {
+    background-color: #ccc;
+}
+
+body.dark fieldset {
+    border-color: #87b8ab;
+}
+
+body.dark fieldset legend {
+    color: #028177;
+}
+
+body.dark #moreOptions label {
+    color: #ddd;
+}
+
+body.dark #toggleMoreBtn {
+    background-color: #87b8ab;
+}
+
+body.dark #toggleMoreBtn:hover {
+    background-color: #679488;
+}
+
+body.dark canvas {
+    border-color: #c7c6c6;
+}
+
+body.dark .btn {
+    background-color: #3498db;
+}
+
+body.dark .btn:hover {
+    background-color: #2980b9;
+}
+
+body.dark .btn:active {
+    background-color: #2471a3;
+}

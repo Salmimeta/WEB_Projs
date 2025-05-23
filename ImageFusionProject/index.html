@@ -4,9 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Image Fusion Tool</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="icon" href="pics/icon.png" type="image/x-icon">
+  <title>Image Fusion</title>
+  <link rel="stylesheet" href="./styles/main.css" />
+  <link rel="icon" href="./pics/icon.png" type="image/x-icon">
 </head>
 
 <body>
@@ -28,7 +28,7 @@
       <label><input type="radio" name="resizeOption" value="preserve" /> Preserve</label>
     </fieldset>
 
-    <button id="downloadBtn" class="btn" onclick="downloadImage()" disabled>Download</button>
+    <button id="downloadBtn" class="btn" disabled>Download</button>
     <button id="clearCanvasBtn" class="btn">Clear Canvas</button>
 
     <div class="more-options-toggle">
@@ -38,10 +38,10 @@
     <div id="moreOptions" class="">
       <label for="fusionMethod">Fusion Method:</label>
       <select id="fusionMethod">
-        <option value="average">Average</option>
-        <option value="lighten">Lighten</option>
-        <option value="darken">Darken</option>
-        <option value="weighted" id="weightedOption">Weighted Average</option> <!-- NEW -->
+        <option value="average">🟡 Average</option>
+        <option value="lighten">🔆 Lighten</option>
+        <option value="darken">🌑 Darken</option>
+        <option value="weighted" id="weightedOption"> Weighted Average</option> <!-- NEW -->
       </select>
 
       <!-- NEW: Slider for Weighted Average -->
@@ -56,7 +56,15 @@
   <div id="loadingOverlay">Loading...</div>
   <canvas id="canvas"></canvas>
 
-  <script src="script.js"></script>
+  <script src="./script/main.js" type="module"></script>
+  <script src="./script/download.js" type="module"></script>
+  <script src="./script/state.js" type="module"></script>
+  <script src="./script/editMenu.js" type="module"></script>
+  <script src="./script/merge.js" type="module"></script>
+  <script src="./script/theme.js" type="module"></script>
+  <script src="./script/upload.js" type="module"></script>
+  <script src="./script/utils.js" type="module"></script>
+
 </body>
 
 </html>

@@ -1,0 +1,95 @@
+.edit-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #ffffffc2;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 20px;
+    color: #000000;
+    line-height: 1;
+    z-index: 3;
+    display: none;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.edit-btn:hover {
+    background: #ffffff;
+    transform: scale(1.1);
+}
+
+.upload-box.has-image .edit-btn {
+    display: flex;
+}
+
+.edit-menu {
+    display: none;
+    position: absolute;
+    top: 5px;
+    left: 10%;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 4px;
+    z-index: 10;
+    flex-direction: column;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.edit-menu.show {
+    display: flex;
+}
+
+.edit-menu button {
+    background: none;
+    border: none;
+    padding: 6px 10px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.85rem;
+    width: 100%;
+}
+
+.edit-menu button:hover {
+    background: #b5b4b4;
+    border-radius: 4px;
+    color: #fff;
+}
+
+.opacity-slider-container {
+    display: none;
+    position: absolute;
+    top: 80px;
+    left: 0%;
+    width: 110%;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 4px;
+    z-index: 10;
+    flex-direction: column;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.opacity-slider {
+    width: 100%;
+}
+
+.merge-methods-container {
+    display: none;
+    position: absolute;
+    top: 30px;
+    left: 40%;
+    width: 110%;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 4px;
+    z-index: 10;
+    flex-direction: column;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
