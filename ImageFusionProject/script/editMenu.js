@@ -174,68 +174,69 @@ function editPosition(inputId) {
         });
 
         document.onmousemove = (e) => {
-    if (dragging) {
-        let newLeft = e.clientX - offsetX;
-        let newTop = e.clientY - offsetY;
+            if (dragging) {
+                let newLeft = e.clientX - offsetX;
+                let newTop = e.clientY - offsetY;
 
-        // Clamp to canvas
-        newLeft = Math.max(0, Math.min(newLeft, canvas.width - wrapper.offsetWidth));
-        newTop = Math.max(0, Math.min(newTop, canvas.height - wrapper.offsetHeight));
+                // Clamp to canvas
+                newLeft = Math.max(0, Math.min(newLeft, canvas.width - wrapper.offsetWidth));
+                newTop = Math.max(0, Math.min(newTop, canvas.height - wrapper.offsetHeight));
 
-        wrapper.style.left = newLeft + 'px';
-        wrapper.style.top = newTop + 'px';
+                wrapper.style.left = newLeft + 'px';
+                wrapper.style.top = newTop + 'px';
 
-    } else if (resizing && currentHandle) {
-        let dx = e.clientX - startX;
-        let dy = e.clientY - startY;
+            } else if (resizing && currentHandle) {
+                let dx = e.clientX - startX;
+                let dy = e.clientY - startY;
 
-        let newWidth = startWidth;
-        let newHeight = startHeight;
-        let newLeft = wrapper.offsetLeft;
-        let newTop = wrapper.offsetTop;
+                let newWidth = startWidth;
+                let newHeight = startHeight;
+                let newLeft = wrapper.offsetLeft;
+                let newTop = wrapper.offsetTop;
 
-        const minSize = 40;
-        
-        switch (currentHandle) {
-            case 'se':
-                newWidth = Math.min(startWidth + dx, canvas.width - newLeft);
-                newHeight = Math.min(startHeight + dy, canvas.height - newTop);
-                break;
+                const minSize = 40;
 
-            case 'sw':
-                newWidth = Math.min(startWidth - dx, newLeft + startWidth);
-                newLeft = newLeft + dx;
-                newLeft = Math.max(0, newLeft);
-                newWidth = Math.max(minSize, Math.min(newWidth, canvas.width - newLeft));
-                newHeight = Math.min(startHeight + dy, canvas.height - newTop);
-                break;
+                switch (currentHandle) {
+                    case 'se':
+                        newWidth = Math.min(startWidth + dx, canvas.width - newLeft);
+                        newHeight = Math.min(startHeight + dy, canvas.height - newTop);
+                        break;
 
-            case 'ne':
-                newHeight = Math.min(startHeight - dy, newTop + startHeight);
-                newTop = newTop + dy;
-                newTop = Math.max(0, newTop);
-                newHeight = Math.max(minSize, Math.min(newHeight, canvas.height - newTop));
-                newWidth = Math.min(startWidth + dx, canvas.width - newLeft);
-                break;
+                    case 'sw':
+                        newWidth = Math.min(startWidth - dx, newLeft + startWidth);
+                        newLeft = newLeft + dx;
+                        newLeft = Math.max(0, newLeft);
+                        newWidth = Math.max(minSize, Math.min(newWidth, canvas.width - newLeft));
+                        newHeight = Math.min(startHeight + dy, canvas.height - newTop);
+                        break;
 
-            case 'nw':
-                newLeft = newLeft + dx;
-                newTop = newTop + dy;
-                newLeft = Math.max(0, newLeft);
-                newTop = Math.max(0, newTop);
-                newWidth = Math.min(startWidth - dx, canvas.width - newLeft);
-                newHeight = Math.min(startHeight - dy, canvas.height - newTop);
-                newWidth = Math.max(minSize, newWidth);
-                newHeight = Math.max(minSize, newHeight);
-                break;
-        }
+                    case 'ne':
+                        newHeight = Math.min(startHeight - dy, newTop + startHeight);
+                        newTop = newTop + dy;
+                        newTop = Math.max(0, newTop);
+                        newHeight = Math.max(minSize, Math.min(newHeight, canvas.height - newTop));
+                        newWidth = Math.min(startWidth + dx, canvas.width - newLeft);
+                        break;
 
-        wrapper.style.left = newLeft + 'px';
-        wrapper.style.top = newTop + 'px';
-        wrapper.style.width = newWidth + 'px';
-        wrapper.style.height = newHeight + 'px';
-    }
-};
+                    case 'nw':
+                        newLeft = newLeft + dx;
+                        newTop = newTop + dy;
+                        newLeft = Math.max(0, newLeft);
+                        newTop = Math.max(0, newTop);
+                        newWidth = Math.min(startWidth - dx, canvas.width - newLeft);
+                        newHeight = Math.min(startHeight - dy, canvas.height - newTop);
+                        newWidth = Math.max(minSize, newWidth);
+                        newHeight = Math.max(minSize, newHeight);
+                        break;
+                }
+
+                wrapper.style.left = newLeft + 'px';
+                wrapper.style.top = newTop + 'px';
+                wrapper.style.width = newWidth + 'px';
+                wrapper.style.height = newHeight + 'px';
+            }
+        };
+
 
 
 
