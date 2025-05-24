@@ -27,6 +27,7 @@ function mergeImages() {
     return;
   }
 
+  saveStateSnapshot();
   const imageElements = [];
   let loaded = 0;
 
@@ -41,6 +42,8 @@ function mergeImages() {
 
   function drawMergedImage(images) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = canvasBgColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Draw background first
     const resizeOption = document.querySelector('input[name="resizeOption"]:checked')?.value;
 
     let width = images[0].width, height = images[0].height;
@@ -136,8 +139,6 @@ function mergeImages() {
       }
     }
 
-    ctx.fillStyle = canvasBgColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height); // Draw background first
     ctx.putImageData(baseImageData, 0, 0);           // Then draw image data on top
 
     document.getElementById('downloadBtn').disabled = false;
@@ -145,11 +146,26 @@ function mergeImages() {
   }
 }
 
-function setupFusionControls() {
-  document.getElementById('toggleBgColorBtn')?.addEventListener('click', () => {
-    canvasBgColor = canvasBgColor === 'black' ? 'white' : 'black';
-    mergeImages(); // re-render with new background
+function toggleCanvasBg() {
+  canvasBgColor = canvasBgColor === 'black' ? 'white' : 'black';
+  mergeImages();
+}
+
+
+function resetAllImages() {
+  document.getElementById('resetBtn')?.addEventListener('click', resetAllImages);
+  const inputs = document.querySelectorAll('.upload-box input[type="file"]');
+  saveStateSnapshot();
+  inputs.forEach(input => {
+    const inputId = input.id;
+    resetImageState(inputId);
   });
+
+  mergeImages(); // redraw canvas using default state
+}
+
+function setupFusionControls() {
+  toggleCanvasBg(); // Set initial canvas background color
 
   document.querySelectorAll('input[name="resizeOption"]').forEach(r =>
     r.addEventListener('change', mergeImages)
@@ -173,18 +189,6 @@ function setupFusionControls() {
   }
 }
 
-function resetAllImages() {
-  document.getElementById('resetBtn')?.addEventListener('click', resetAllImages);
-  const inputs = document.querySelectorAll('.upload-box input[type="file"]');
-  saveStateSnapshot();
-  inputs.forEach(input => {
-    const inputId = input.id;
-    resetImageState(inputId);
-  });
-
-  mergeImages(); // redraw canvas using default state
-}
 
 
-
-export { mergeImages, setupFusionControls, resetAllImages };
+export { mergeImages, setupFusionControls, resetAllImages, toggleCanvasBg };

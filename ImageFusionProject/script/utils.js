@@ -1,4 +1,6 @@
 import { imageOpacities, imagePositions, imageMergingMethods, imageWeights } from './state.js';
+import { mergeImages } from './merge.js';
+
 
 function avg(arr) {
   return Math.floor(arr.reduce((a, b) => a + b, 0) / arr.length);
@@ -50,16 +52,23 @@ function saveStateSnapshot() {
 }
 
 function undoState() {
+  if (history.length === 0) {
+    console.warn('No state history to undo.');
+    return;
+  }
   if (historyIndex > 0) {
     historyIndex--;
     loadStateSnapshot(history[historyIndex]);
+    mergeImages();
   }
 }
+
 
 function redoState() {
   if (historyIndex < history.length - 1) {
     historyIndex++;
     loadStateSnapshot(history[historyIndex]);
+    mergeImages();
   }
 }
 

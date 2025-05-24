@@ -3,7 +3,7 @@
 
 import { createUploadBox } from './upload.js';
 import { setupThemeToggle } from './theme.js';
-import { setupFusionControls, resetAllImages, mergeImages } from './merge.js';
+import { setupFusionControls, resetAllImages, mergeImages, toggleCanvasBg } from './merge.js';
 import { setupEditUI, setupMoreOptionsToggle } from './editMenu.js';
 import { setupDownloadHandler, setupResetButton } from './download.js';
 import { setupReloadWarning, undoState, redoState } from './utils.js';
@@ -30,4 +30,7 @@ window.addEventListener('DOMContentLoaded', () => {
     redoState();
     mergeImages();
   });
+
+  document.getElementById('toggleBgColorBtn')?.addEventListener('click', toggleCanvasBg);
+
 });

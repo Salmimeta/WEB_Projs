@@ -9,6 +9,9 @@ import {
     setImageOpacity
 } from './state.js';
 
+import { saveStateSnapshot } from './utils.js';
+
+
 function toggleEditMenu(button) {
     const menu = button.nextElementSibling;
     const openMenus = document.querySelectorAll('.edit-menu.show');
