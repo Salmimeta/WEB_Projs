@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Image Fusion</title>
+  <title>Advanced Image Fusion</title>
   <link rel="stylesheet" href="styles/main.css" />
   <link rel="icon" href="pics/icon.png" type="image/x-icon">
 </head>
@@ -17,9 +17,12 @@
     </label>
   </div>
 
-  <h1>Image Merge</h1>
+  <h1>Advanced Image Fusion</h1>
 
   <div class="upload-section"><!-- Upload boxes inserted dynamically --></div>
+
+  <div id="positionHint">Click anywhere to release</div>
+  <canvas id="canvas"></canvas>
 
   <div class="options" id="optionsPanel">
     <fieldset>
@@ -36,13 +39,7 @@
     </div>
 
     <div id="moreOptions" class="">
-      <label for="fusionMethod">Fusion Method:</label>
-      <select id="fusionMethod">
-        <option value="average">🟡 Average</option>
-        <option value="lighten">🔆 Lighten</option>
-        <option value="darken">🌑 Darken</option>
-        <option value="weighted" id="weightedOption"> Weighted Average</option>
-      </select>
+      
 
       <div id="weightSliderContainer" style="display:none; margin-top: 10px;">
         <label for="weightSlider">Weight (Image 1 vs Image 2):</label>
@@ -54,8 +51,6 @@
 
   <div id="loadingOverlay">Loading...</div>
 
-  <canvas id="canvas"></canvas>
-  <div id="positionHint">Click anywhere to release</div>
 
   <script src="script/main.js" type="module"></script> <!-- optional -->
   <script src="script/download.js" type="module"></script>

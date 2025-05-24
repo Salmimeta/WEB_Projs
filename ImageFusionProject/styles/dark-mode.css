@@ -1,6 +1,6 @@
 /* === Dark Mode === */
 body.dark {
-    background-color: #103b28;
+    background-image: linear-gradient(270deg, #1c6275, #55bea2, #1c6275);
     color: #f2f2f2;
 }
 

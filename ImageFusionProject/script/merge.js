@@ -50,7 +50,7 @@ function mergeImages() {
     canvas.height = height;
 
     const tempCanvas = document.createElement('canvas');
-    const tempCtx = tempCanvas.getContext('2d');
+    const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
     tempCanvas.width = width;
     tempCanvas.height = height;
 

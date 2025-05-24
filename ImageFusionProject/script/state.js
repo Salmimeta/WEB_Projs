@@ -16,16 +16,16 @@ export function setImageIndex(index) {
 export function getImageOpacities() {
     return imageOpacities;
 }
-export function setImageOpacity(key, value) {
-    imageOpacities[key] = value;
+export function setImageOpacity(id, value) {
+    imageOpacities[id] = value;
 }
 
 // Getter and Setter for imagePositions
 export function getImagePositions() {
     return imagePositions;
 }
-export function setImagePosition(key, value) {
-    imagePositions[key] = value;
+export function setImagePosition(id, pos) {
+    imagePositions[id] = pos;
 }
 
 export function resetImagePositions() {
@@ -46,6 +46,6 @@ export function setImageMergingMethod(key, value) {
 export function getImageWeights() {
     return imageWeights;
 }
-export function setImageWeight(key, value) {
-    imageWeights[key] = value;
+export function setImageWeight(id, value) {
+    imageWeights[id] = value;
 }
