@@ -58,8 +58,13 @@ function createUploadBox() {
     newBox.querySelector('.edit-opacity-btn').addEventListener('click', () => editOpacity(inputId));
     newBox.querySelector('.edit-merge-btn').addEventListener('click', () => editMerging(inputId));
 
-    newBox.classList.add('fade-in');
-    setTimeout(() => newBox.classList.remove('fade-in'), 300);
+    // Apply animation AFTER DOM update
+    requestAnimationFrame(() => {
+        newBox.classList.add('fade-in');
+        setTimeout(() => newBox.classList.remove('fade-in'), 300);
+        newBox.scrollIntoView({ behavior: 'smooth', inline: 'end' });
+    });
+
 
     // select file
     const input = newBox.querySelector('input');
@@ -99,7 +104,7 @@ function previewImage(inputId, boxId) {
             box.classList.add('has-image');
             input.disabled = true;
             box.querySelector('.edit-btn').style.display = 'block';
-            
+
             document.getElementById(`${inputId}-type`).textContent = formatFileType(file);
             document.getElementById(`${inputId}-name`).textContent = truncateFileName(file.name);
 

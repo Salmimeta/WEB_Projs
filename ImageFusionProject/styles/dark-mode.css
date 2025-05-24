@@ -71,7 +71,7 @@ body.dark fieldset {
 }
 
 body.dark fieldset legend {
-    color: #028177;
+    color: #000000;
 }
 
 body.dark #moreOptions label {
@@ -91,13 +91,13 @@ body.dark canvas {
 }
 
 body.dark .btn {
-    background-color: #3498db;
+    background-color: #0acaa1;
 }
 
 body.dark .btn:hover {
-    background-color: #2980b9;
+    background-color: #079c7c;
 }
 
 body.dark .btn:active {
-    background-color: #2471a3;
+    background-color: #079c7c;
 }

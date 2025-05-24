@@ -5,7 +5,8 @@ import {
     getImageWeights,
     getImagePositions,
     setImageWeight,
-    setImagePosition
+    setImagePosition, 
+    setImageOpacity
 } from './state.js';
 
 function toggleEditMenu(button) {
@@ -57,7 +58,8 @@ function editOpacity(inputId) {
         slider.value = getImageOpacities()[inputId] ?? 1;
         slider.oninput = (e) => {
             const val = parseFloat(e.target.value);
-            getImageOpacities()[inputId] = val;
+            saveStateSnapshot();
+            setImageOpacity(inputId, val);
             mergeImages();
         };
     }
@@ -76,6 +78,7 @@ function editMerging(inputId) {
     mergeMenu.querySelectorAll('button[data-method]').forEach(btn => {
         btn.onclick = () => {
             const method = btn.getAttribute('data-method');
+            saveStateSnapshot();
             const map = getImageMergingMethods();
             map[inputId] = method;
             mergeImages();
@@ -88,6 +91,7 @@ function editMerging(inputId) {
                 slider.value = getImageWeights()[inputId] ?? 0.5;
                 slider.oninput = (e) => {
                     const val = parseFloat(e.target.value);
+                    saveStateSnapshot();
                     setImageWeight(inputId, val);
                     mergeImages();
                 };
@@ -236,6 +240,7 @@ function editPosition(inputId) {
                 const finalW = wrapper.offsetWidth;
                 const finalH = wrapper.offsetHeight;
 
+                saveStateSnapshot();
                 setImagePosition(inputId, { x: finalX, y: finalY, width: finalW, height: finalH });
                 mergeImages();
 
