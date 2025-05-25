@@ -2,11 +2,16 @@ import {
   getImageOpacities,
   getImagePositions,
   getImageMergingMethods,
-  getImageWeights
+  getImageWeights,
 } from './state.js';
-import { avg } from './utils.js';
+
+import { resetImageState, saveStateSnapshot } from './utils.js';
+
+let canvasBgColor = 'black'; // default
 
 function mergeImages() {
+  saveStateSnapshot();
+
   const fileInputs = Array.from(document.querySelectorAll('.upload-box input[type="file"]'));
   const files = fileInputs.map(input => input.files[0]).filter(Boolean);
 
@@ -22,6 +27,7 @@ function mergeImages() {
     return;
   }
 
+  saveStateSnapshot();
   const imageElements = [];
   let loaded = 0;
 
@@ -35,6 +41,9 @@ function mergeImages() {
   });
 
   function drawMergedImage(images) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = canvasBgColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Draw background first
     const resizeOption = document.querySelector('input[name="resizeOption"]:checked')?.value;
 
     let width = images[0].width, height = images[0].height;
@@ -50,7 +59,7 @@ function mergeImages() {
     canvas.height = height;
 
     const tempCanvas = document.createElement('canvas');
-    const tempCtx = tempCanvas.getContext('2d');
+    const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
     tempCanvas.width = width;
     tempCanvas.height = height;
 
@@ -79,11 +88,25 @@ function mergeImages() {
       const imgData = tempCtx.getImageData(0, 0, width, height).data;
 
       for (let p = 0; p < baseImageData.data.length; p += 4) {
-        baseImageData.data[p] += imgData[p] / images.length;
-        baseImageData.data[p + 1] += imgData[p + 1] / images.length;
-        baseImageData.data[p + 2] += imgData[p + 2] / images.length;
-        baseImageData.data[p + 3] = 255;
+        if (method === 'average') {
+          baseImageData.data[p] += imgData[p] / images.length;
+          baseImageData.data[p + 1] += imgData[p + 1] / images.length;
+          baseImageData.data[p + 2] += imgData[p + 2] / images.length;
+        } else if (method === 'lighten') {
+          baseImageData.data[p] = Math.max(baseImageData.data[p], imgData[p]);
+          baseImageData.data[p + 1] = Math.max(baseImageData.data[p + 1], imgData[p + 1]);
+          baseImageData.data[p + 2] = Math.max(baseImageData.data[p + 2], imgData[p + 2]);
+        } else if (method === 'darken') {
+          baseImageData.data[p] = Math.min(baseImageData.data[p], imgData[p]);
+          baseImageData.data[p + 1] = Math.min(baseImageData.data[p + 1], imgData[p + 1]);
+          baseImageData.data[p + 2] = Math.min(baseImageData.data[p + 2], imgData[p + 2]);
+        }
+
+        if (imgData[p + 3] > 0) {
+          baseImageData.data[p + 3] = 255;
+        }
       }
+
     }
 
     // Handle weighted overlays now
@@ -116,13 +139,33 @@ function mergeImages() {
       }
     }
 
-    ctx.putImageData(baseImageData, 0, 0);
+    ctx.putImageData(baseImageData, 0, 0);           // Then draw image data on top
+
     document.getElementById('downloadBtn').disabled = false;
     loading.style.display = 'none';
   }
 }
 
+function toggleCanvasBg() {
+  canvasBgColor = canvasBgColor === 'black' ? 'white' : 'black';
+  mergeImages();
+}
+
+
+function resetAllImages() {  
+  const inputs = document.querySelectorAll('.upload-box input[type="file"]');
+  saveStateSnapshot();
+  inputs.forEach(input => {
+    const inputId = input.id;
+    resetImageState(inputId);
+  });
+
+  mergeImages(); // redraw canvas using default state
+}
+
 function setupFusionControls() {
+  toggleCanvasBg(); // Set initial canvas background color
+
   document.querySelectorAll('input[name="resizeOption"]').forEach(r =>
     r.addEventListener('change', mergeImages)
   );
@@ -145,4 +188,6 @@ function setupFusionControls() {
   }
 }
 
-export { mergeImages, setupFusionControls };
+
+
+export { mergeImages, setupFusionControls, resetAllImages, toggleCanvasBg };

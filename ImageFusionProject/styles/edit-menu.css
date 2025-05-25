@@ -79,6 +79,25 @@
     width: 100%;
 }
 
+.weight-slider-container {
+    display: none;
+    position: absolute;
+    top: 80px;
+    left: 0%;
+    width: 110%;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 4px;
+    z-index: 10;
+    flex-direction: column;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.weight-slider {
+    width: 100%;
+}
+
 .merge-methods-container {
     display: none;
     position: absolute;

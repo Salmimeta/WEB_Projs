@@ -1,7 +1,19 @@
 /* === Dark Mode === */
 body.dark {
-    background-color: #103b28;
+    background-image: linear-gradient(270deg, #1c6275, #55bea2, #1c6275);
     color: #f2f2f2;
+}
+
+body.dark .navbar .nav-links a {
+    color: #f2f2f2;
+}
+
+body.dark .navbar .nav-links a.active {
+    color: #306059;
+}
+
+body.dark .nav-links a.active {
+    border-bottom: 2px solid #306059;
 }
 
 body.dark h1 {
@@ -71,7 +83,7 @@ body.dark fieldset {
 }
 
 body.dark fieldset legend {
-    color: #028177;
+    color: #d9f7ef;
 }
 
 body.dark #moreOptions label {
@@ -91,13 +103,17 @@ body.dark canvas {
 }
 
 body.dark .btn {
-    background-color: #3498db;
+    background-color: #0acaa1;
 }
 
 body.dark .btn:hover {
-    background-color: #2980b9;
+    background-color: #079c7c;
 }
 
 body.dark .btn:active {
-    background-color: #2471a3;
+    background-color: #079c7c;
+}
+
+body.dark .section-title h2 {
+    color: #dbfced;
 }

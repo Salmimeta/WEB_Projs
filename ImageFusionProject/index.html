@@ -4,67 +4,153 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Image Fusion</title>
+  <title>Advanced Image Fusion</title>
   <link rel="stylesheet" href="styles/main.css" />
   <link rel="icon" href="pics/icon.png" type="image/x-icon">
 </head>
 
 <body>
-  <div class="toggle-container">
-    <label class="switch">
-      <input type="checkbox" id="darkModeToggle" title="Toggle Dark Mode" />
-      <span class="slider"></span>
-    </label>
-  </div>
 
-  <h1>Image Merge</h1>
-
-  <div class="upload-section"><!-- Upload boxes inserted dynamically --></div>
-
-  <div class="options" id="optionsPanel">
-    <fieldset>
-      <legend>Resize Option</legend>
-      <label><input type="radio" name="resizeOption" value="stretch" checked /> Stretch</label>
-      <label><input type="radio" name="resizeOption" value="preserve" /> Preserve</label>
-    </fieldset>
-
-    <button id="downloadBtn" class="btn" disabled>Download</button>
-    <button id="clearCanvasBtn" class="btn">Clear Canvas</button>
-
-    <div class="more-options-toggle">
-      <button id="toggleMoreBtn" class="btn">More Options ↓</button>
+  <header class="navbar">
+    <div class="logo">
+      <img src="pics/icon.png" alt="Site Icon">
+      <span>Fusion App</span>
     </div>
+    <nav class="nav-links">
+      <a href="#canvas">Home</a>
+      <a href="#video-demo">Demo</a>
+      <a href="#what-we-do">What we do</a>
+    </nav>
+    <div class="toggle-container">
+      <label class="switch">
+        <input type="checkbox" id="darkModeToggle" title="Toggle Dark Mode" />
+        <span class="slider"></span>
+      </label>
+    </div>
+  </header>
 
-    <div id="moreOptions" class="">
-      <label for="fusionMethod">Fusion Method:</label>
-      <select id="fusionMethod">
-        <option value="average">🟡 Average</option>
-        <option value="lighten">🔆 Lighten</option>
-        <option value="darken">🌑 Darken</option>
-        <option value="weighted" id="weightedOption"> Weighted Average</option>
-      </select>
 
-      <div id="weightSliderContainer" style="display:none; margin-top: 10px;">
-        <label for="weightSlider">Weight (Image 1 vs Image 2):</label>
-        <input type="range" id="weightSlider" min="0" max="100" value="50" />
-        <span id="weightValue">50%</span>
+
+
+  <h1>Advanced Image Fusion</h1>
+
+
+  <section id="tool-section">
+    <div class="upload-section"><!-- Upload boxes inserted dynamically --></div>
+
+    <div id="positionHint">Click anywhere to release</div>
+    <canvas id="canvas"></canvas>
+
+    <div class="options" id="optionsPanel">
+      <fieldset>
+        <legend>Resize Option</legend>
+        <label><input type="radio" name="resizeOption" value="stretch" checked /> Stretch</label>
+        <label><input type="radio" name="resizeOption" value="preserve" /> Preserve</label>
+      </fieldset>
+
+      <button id="downloadBtn" class="btn" disabled>Download</button>
+      <button id="clearCanvasBtn" class="btn">Clear</button>
+
+      <div class="more-options-toggle">
+        <button id="toggleMoreBtn" class="btn">More Options ↓</button>
+      </div>
+
+      <div id="moreOptions" class="">
+        <button id="resetBtn" class="btn" style="background-image: url('pics/reset-svgrepo-com.svg');"></button>
+        <button id="undo" class="btn" style="background-image: url('pics/undo-svgrepo-com.svg');"></button>
+        <button id="redo" class="btn" style="background-image: url('pics/redo-svgrepo-com.svg');"></button>
+        <button id="toggleBgColorBtn" class="btn"
+          style="background-image: url('pics/background-svgrepo-com.svg');"></button>
+
+
       </div>
     </div>
-  </div>
+  </section>
 
   <div id="loadingOverlay">Loading...</div>
 
-  <canvas id="canvas"></canvas>
-  <div id="positionHint">Click anywhere to release</div>
+  <section id="video-demo">
+    <div class="section-title">
+      <h2>Watch merge images tool demo here</h2>
+    </div>
 
+    <div class="video-wrapper">
+      <video controls muted poster="pics/demo_poster.png">
+        <source src="vids/Advanced_Image_Fusion_Demo.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+  </section>
+
+  <section id="what-we-do">
+
+    <div class="section-title">
+      <h2>What we do</h2>
+    </div>
+
+    <div class="info-cards">
+      <div class="info-card">
+        <div class="icon-circle">
+          <img src="pics/image-icon.svg" alt="merge icon">
+        </div>
+        <h3>Merge images online</h3>
+        <p>Merge images horizontally or vertically using this tool. Simply add images, select the merge type, then
+          preview
+          and download.</p>
+      </div>
+      <div class="info-card">
+        <div class="icon-circle">
+          <img src="pics/link-icon.svg" alt="link icon">
+        </div>
+        <h3>How this tool works?</h3>
+        <p>The tool joins images based on direction. With resize, it adjusts dimensions uniformly. It adds border color
+          if
+          selected.</p>
+      </div>
+      <div class="info-card">
+        <div class="icon-circle">
+          <img src="pics/smile-icon.svg" alt="free icon">
+        </div>
+        <h3>Is it a free tool?</h3>
+        <p>This tool is 100% free, full version, no signup, no hidden payments or limits. Merge unlimited images freely.
+        </p>
+      </div>
+      <div class="info-card">
+        <div class="icon-circle">
+          <img src="pics/lock-icon.svg" alt="secure icon">
+        </div>
+        <h3>Are my images secured?</h3>
+        <p>
+          Yes, your images are highly secured. They are never uploaded to any server — everything is processed in the
+          browser only.
+        </p>
+      </div>
+
+      <div class="info-card">
+        <div class="icon-circle">
+          <img src="pics/thumbs-up-icon.svg" alt="skills icon">
+        </div>
+        <h3>Any skills required?</h3>
+        <p>
+          No special skills are needed. Just upload, choose the options, and preview the result. The tool handles
+          everything.
+        </p>
+      </div>
+
+      <div class="info-card">
+        <div class="icon-circle">
+          <img src="pics/download-icon.svg" alt="download icon">
+        </div>
+        <h3>How to download merged image?</h3>
+        <p>
+          Once you're happy with the preview, simply click the download button at the bottom to save your final merged
+          image.
+        </p>
+      </div>
+    </div>
+  </section>
   <script src="script/main.js" type="module"></script> <!-- optional -->
-  <script src="script/download.js" type="module"></script>
-  <script src="script/state.js" type="module"></script>
-  <script src="script/editMenu.js" type="module"></script>
-  <script src="script/merge.js" type="module"></script>
-  <script src="script/theme.js" type="module"></script>
-  <script src="script/upload.js" type="module"></script>
-  <script src="script/utils.js" type="module"></script>
 
 </body>
 

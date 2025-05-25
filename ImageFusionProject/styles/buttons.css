@@ -7,7 +7,7 @@
     font-size: 1rem;
     font-weight: 500;
     color: #fff;
-    background-color: #3498db;
+    background-color: #52ab98;
     border: none;
     border-radius: 6px;
     cursor: pointer;
@@ -16,12 +16,12 @@
 }
 
 .btn:hover {
-    background-color: #2980b9;
+    background-color: #448f7f;
     transform: translateY(-1px);
 }
 
 .btn:active {
-    background-color: #2471a3;
+    background-color: #59bda7;
     transform: scale(0.98);
 }
 
@@ -38,7 +38,6 @@
 
 #toggleMoreBtn {
     background-color: #52ab98;
-    color: rgb(31, 28, 28);
     border: none;
     margin-top: 10px;
     margin-bottom: 20px;
@@ -57,4 +56,21 @@ button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
     opacity: 0.6;
+}
+
+#undo, #redo, #resetBtn, #toggleBgColorBtn {
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #3498db00;
+  border-radius: 50%;
+  border: 1px dotted black;
+  color: transparent; /* Hide text if using icons only */
+  width: 40px;
+  height: 40px;
+  padding: 0;
+}
+
+#undo, #redo, #resetBtn, #toggleBgColorBtn :hover {
+  background-color: #52ab9800;
 }

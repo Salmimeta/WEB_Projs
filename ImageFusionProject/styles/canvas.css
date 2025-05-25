@@ -3,7 +3,7 @@ canvas {
   display: block;
   background-color: #f0f1dd;
   margin: 20px auto;
-  border: 5px solid #ccc;
+  border: 5px solid #c2c0c0;
   border-radius: 10px;
   max-width: 100%;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
@@ -71,8 +71,8 @@ canvas {
 /* === Position Hint === */
 #positionHint {
   display: none;
-  position: absolute;
-  top: calc(100% + 8px);
+  position: fixed;
+  top: 20px;
   left: 50%;
   transform: translateX(-50%);
   background-color: #222;
@@ -83,8 +83,10 @@ canvas {
   z-index: 10000;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.3s ease-in-out;
+  pointer-events: none;
 }
-canvas.positioning-active + #positionHint {
+
+#positionHint.active {
   display: block;
 }
 

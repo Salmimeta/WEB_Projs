@@ -67,8 +67,9 @@ fieldset {
 }
 
 fieldset legend {
-    font-weight: 700;
-    color: #706767;
+    font-weight: 400;
+    font-family: cursive;
+    color: #a9a9a9;
 }
 
 .more-options-toggle {

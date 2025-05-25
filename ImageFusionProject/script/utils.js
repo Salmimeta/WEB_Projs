@@ -1,3 +1,7 @@
+import { imageOpacities, imagePositions, imageMergingMethods, imageWeights } from './state.js';
+import { mergeImages } from './merge.js';
+
+
 function avg(arr) {
   return Math.floor(arr.reduce((a, b) => a + b, 0) / arr.length);
 }
@@ -26,4 +30,55 @@ function setupReloadWarning() {
   });
 }
 
-export { avg, formatFileType, truncateFileName, setupReloadWarning };
+function resetImageState(id) {
+  delete imageOpacities[id];
+  delete imagePositions[id];
+  delete imageMergingMethods[id];
+  delete imageWeights[id];
+}
+
+const history = [];
+let historyIndex = -1;
+
+function saveStateSnapshot() {
+  history.splice(historyIndex + 1);
+  history.push(JSON.stringify({
+    opacities: { ...imageOpacities },
+    positions: { ...imagePositions },
+    methods: { ...imageMergingMethods },
+    weights: { ...imageWeights }
+  }));
+  historyIndex++;
+}
+
+function undoState() {
+  if (history.length === 0) {
+    console.warn('No state history to undo.');
+    return;
+  }
+  if (historyIndex > 0) {
+    historyIndex--;
+    loadStateSnapshot(history[historyIndex]);
+    mergeImages();
+  }
+}
+
+
+function redoState() {
+  if (historyIndex < history.length - 1) {
+    historyIndex++;
+    loadStateSnapshot(history[historyIndex]);
+    mergeImages();
+  }
+}
+
+function loadStateSnapshot(json) {
+  const snapshot = JSON.parse(json);
+  Object.assign(imageOpacities, snapshot.opacities);
+  Object.assign(imagePositions, snapshot.positions);
+  Object.assign(imageMergingMethods, snapshot.methods);
+  Object.assign(imageWeights, snapshot.weights);
+}
+
+
+export { avg, formatFileType, truncateFileName, setupReloadWarning, resetImageState, saveStateSnapshot, undoState, redoState };

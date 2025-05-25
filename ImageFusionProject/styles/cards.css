@@ -1,0 +1,115 @@
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 3rem 0 2rem;
+  position: relative;
+}
+
+.section-title h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2b6777;
+  padding: 0 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.section-title::before,
+.section-title::after {
+  content: "";
+  flex: 1;
+  height: 2px;
+  background-color: #000000; /* soft pink, adjust if needed */
+  margin: 0 0.5rem;
+  opacity: 0.5;
+}
+
+.video-wrapper {
+  max-width: 800px;        /* limits how wide it can go */
+  width: 100%;             /* responsive */
+  margin: 0 auto;          /* centers it */
+  padding: 1rem;
+}
+
+.video-wrapper video {
+  width: 100%;             /* scales video to wrapper */
+  height: auto;            /* keeps aspect ratio */
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+  display: block;
+}
+
+
+.info-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    margin: 3rem auto;
+    max-width: 1200px;
+    padding: 1rem;
+}
+
+.info-card {
+    flex: 1 1 300px;
+    background-color: #ddfdfa;
+    border-radius: 16px;
+    color: #fff;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+}
+
+.info-card .icon-circle {
+    background-color: #90f7db;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-card .icon-circle img {
+    width: 40px;
+    height: 40px;
+}
+
+.info-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+    color: black;
+}
+
+.info-card p {
+    font-size: 0.95rem;
+    color: #797b7b;
+    line-height: 1.5;
+}
+
+.info-card:hover {
+    background-color: #8ad1c5;
+}
+
+.info-card:hover h3 {
+    color: #fff;
+}
+
+.info-card:hover p {
+    color: #f0f0f0;
+}
+
+@media (max-width: 900px) {
+    .info-cards {
+        flex-direction: column;
+        align-items: center;
+    }
+}

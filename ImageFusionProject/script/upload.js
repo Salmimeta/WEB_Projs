@@ -32,6 +32,9 @@ function createUploadBox() {
             <button data-method="lighten">🔆 Lighten</button>
             <button data-method="darken">🌑 Darken</button>
             <button data-method="weighted">⚖️ Weighted</button>
+            <div class="merge-slider-container" style="display: none;">
+                <input type="range" min="0" max="1" step="0.01" value="1" class="merge-slider" />
+            </div>
         </div>
 
         
@@ -55,8 +58,13 @@ function createUploadBox() {
     newBox.querySelector('.edit-opacity-btn').addEventListener('click', () => editOpacity(inputId));
     newBox.querySelector('.edit-merge-btn').addEventListener('click', () => editMerging(inputId));
 
-    newBox.classList.add('fade-in');
-    setTimeout(() => newBox.classList.remove('fade-in'), 300);
+    // Apply animation AFTER DOM update
+    requestAnimationFrame(() => {
+        newBox.classList.add('fade-in');
+        setTimeout(() => newBox.classList.remove('fade-in'), 300);
+        newBox.scrollIntoView({ behavior: 'smooth', inline: 'end' });
+    });
+
 
     // select file
     const input = newBox.querySelector('input');
@@ -96,7 +104,6 @@ function previewImage(inputId, boxId) {
             box.classList.add('has-image');
             input.disabled = true;
             box.querySelector('.edit-btn').style.display = 'block';
-            console.log('Edit button bound')
 
             document.getElementById(`${inputId}-type`).textContent = formatFileType(file);
             document.getElementById(`${inputId}-name`).textContent = truncateFileName(file.name);
