@@ -45,7 +45,7 @@ function setupResetButton() {
     createUploadBox();
 
     document.querySelector('input[name="resizeOption"][value="stretch"]').checked = true;
-    document.getElementById('fusionMethod').value = 'average';
+    // document.getElementById('fusionMethod').value = 'average';
 
     moreOptions.classList.remove('visible');
     toggleBtn.textContent = 'More Options ↓';

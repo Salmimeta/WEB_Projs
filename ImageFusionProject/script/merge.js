@@ -152,8 +152,7 @@ function toggleCanvasBg() {
 }
 
 
-function resetAllImages() {
-  document.getElementById('resetBtn')?.addEventListener('click', resetAllImages);
+function resetAllImages() {  
   const inputs = document.querySelectorAll('.upload-box input[type="file"]');
   saveStateSnapshot();
   inputs.forEach(input => {
